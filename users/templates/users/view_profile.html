@@ -1,0 +1,6 @@
+<h2>Profile</h2>
+<p>Name: {{ profile.name }}</p>
+{% if profile.icon %}
+    <img src="{{ profile.icon.url }}" alt="Profile Icon">
+{% endif %}
+<p>Introduction: {{ profile.introduction }}</p>

@@ -1,0 +1,37 @@
+/* comment_styles.css */
+
+/* フォームのスタイル */
+.comment-form {
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* フォーム内の要素のスタイル */
+.comment-form input[type="text"],
+.comment-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+/* 送信ボタンのスタイル */
+.comment-button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #555;
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.comment-button:hover {
+    background-color: #777;
+}
