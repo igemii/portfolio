@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>プロフィール編集</title>
+    <link rel="stylesheet" href="{% static 'css/edit_styles.css' %}"> <!-- プロフィール編集用のCSSファイルを読み込む -->
+</head>
+<body>
+    <h2>プロフィール編集</h2>
+    <form method="post" enctype="multipart/form-data" class="profile-edit-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="profile-edit-button">Save Changes</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,94 @@
+
+
+/* 全体のスタイル */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+}
+
+/* ヘッダー */
+header {
+    background-color: #555;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+}
+
+/* メインセクション */
+main {
+    padding: 20px;
+}
+
+/* プロフィール情報 */
+.profile-section {
+    margin-bottom: 30px;
+}
+
+.profile-info {
+    text-align: center;
+}
+
+.profile-info h2 {
+    margin-bottom: 10px;
+}
+
+.profile-info img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+}
+
+/* 投稿一覧 */
+.user-posts-section,
+.favorite-posts-section {
+    margin-bottom: 30px;
+}
+
+.user-posts-section h2,
+.favorite-posts-section h2 {
+    margin-bottom: 10px;
+}
+
+.user-posts-list,
+.favorite-posts-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 20px;
+}
+
+.user-posts-list li,
+.favorite-posts-list li {
+    flex-basis: calc(33.33% - 20px);
+}
+
+.user-posts-list img,
+.favorite-posts-list img {
+    width: 100%;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.user-posts-list img:hover,
+.favorite-posts-list img:hover {
+    transform: scale(1.05);
+}
+
+/* フッター */
+footer {
+    text-align: center;
+    margin-top: 30px;
+}
+
+footer a {
+    margin-right: 10px;
+    text-decoration: none;
+    color: #333;
+}

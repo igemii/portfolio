@@ -1,0 +1,58 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Detail</title>
+    <link rel="stylesheet" href="{% static 'css/post_detail_styles.css' %}"> <!-- 投稿詳細用のCSSファイルを読み込む -->
+</head>
+<body>
+    <header>
+        <h1>{{ post.title }}</h1>
+        <p>{{ post.description }}</p>
+        <!-- 他の投稿詳細情報を表示 -->
+
+        <!-- 投稿者のユーザーページへのリンク -->
+        {% if post.author %}
+            <p>投稿者: <a href="{% url 'profile' post.author.username %}">{{ post.author.username }}</a></p>
+        {% endif %}
+    </header>
+
+    <main>
+        <img src="{{ post.image.url }}" alt="{{ post.title }} Image" width="500" height="300">
+        <!-- 他の詳細情報やいいねボタン、お気に入り登録ボタンなど -->
+
+        <!-- コメントフォーム -->
+        <form method="post" action="{% url 'add_comment_to_post' post.id %}">
+            {% csrf_token %}
+            <button type="submit" class="comment-button">コメント</button>
+        </form>
+
+            <!-- コメント表示ループ -->
+            {% for comment in post.comments.all %}
+                <li class="comment-item">
+                    <p>{{ comment.text }}</p>
+                    <p>投稿者: {{ comment.author.username }}</p>
+                    <p>投稿日時: {{ comment.created_at }}</p>
+                    <!-- コメント削除ボタン -->
+                    {% if user.is_authenticated and comment.author == user %}
+                        <form method="post" action="{% url 'delete_comment' comment.id %}">
+                            {% csrf_token %}
+                            <button type="submit">コメント削除</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% empty %}
+                <li>コメントはありません。</li>
+            {% endfor %}
+        </ul>
+    </main>
+
+    <footer>
+        <!-- ページ遷移ボタン -->
+        <button onclick="history.back()">1つ前のページに戻る</button>
+        <a href="{% url 'post_list' %}">トップページに戻る</a>
+    </footer>
+</body>
+</html>
