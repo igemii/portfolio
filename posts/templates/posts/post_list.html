@@ -8,8 +8,8 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}"> <!-- 外部のCSSファイルを読み込む -->
 </head>
 <body>
-    <header>
-        <h1>Welcome to My Like Room</h1>
+    <header style="background-color: #f5f5dc;"> <!-- アイボリー色の例 -->
+        <h1>My Like Room</h1>
         <!-- 検索フォーム -->
         <form method="GET" action="{% url 'search_posts' %}">
             <input type="text" name="q" placeholder="Search...">
@@ -42,27 +42,38 @@
 
          <!-- ウェブサイトの概要 -->
         <div class="site-description">
-            <p>Welcome to My Like Room - a place to share and discover amazing rooms!</p>
+            <p>Welcome to My Like Room - 部屋の写真を共有して、素敵な部屋を見つけよう!</p>
         </div>
 
     </header>
 
     <main>
-        <!-- 投稿一覧を表示 -->
         <div class="post-container">
+            <!-- 投稿一覧の表示 -->
             {% for post in posts %}
                 <div class="post-item">
                     <h2>{{ post.title }}</h2>
                     <a href="{% url 'post_detail' post.id %}">
-                        <img src="{{ post.image.url }}" alt="{{ post.title }} Image" width="500" height="300">
+                        {% if post.images.all %}
+                            {% if post.images.count > 1 %}
+                                <img src="{{ post.images.first.image.url }}" alt="{{ post.title }} Image">
+                            {% else %}
+                                <img src="{{ post.images.first.image.url }}" alt="{{ post.title }} Image" width="500" height="300">
+                            {% endif %}
+                        {% else %}
+                            <p>No image available</p> <!-- 画像がない場合に表示する文言 -->
+                        {% endif %}
                     </a>
                 </div>
             {% endfor %}
         </div>
     </main>
 
-    <footer>
+    
+
+    <footer style="background-color: #f5f5dc;"> <!-- アイボリー色の例 -->
         <!-- フッターのコンテンツ -->
     </footer>
+
 </body>
 </html>

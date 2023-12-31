@@ -4,15 +4,24 @@ from django.contrib.auth.models import User
 
 
 """投稿のモデル"""
+
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='posts')
     title = models.CharField(max_length=100)
     description = models.TextField()
-    image = models.ImageField(upload_to='images/')
-    created_at = models.DateTimeField(auto_now_add=True)
+    images = models.ManyToManyField('PostImage', blank=True)  # PostImageモデルとの多対多のリレーションを定義
 
     def __str__(self):
         return self.title
+    
+
+"""投稿写真のモデル"""
+
+class PostImage(models.Model):
+    image = models.ImageField(upload_to='post_images/')
+
+    def __str__(self):
+        return str(self.image)
 
 
 """コメントのモデル"""
@@ -30,8 +39,6 @@ class Comment(models.Model):
 
 """お気に入りのモデル"""
 
-from django.db import models
-from django.contrib.auth.models import User
 
 class Favorite(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

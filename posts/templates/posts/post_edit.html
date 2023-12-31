@@ -1,0 +1,42 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Post</title>
+    <link rel="stylesheet" href="{% static 'css/edit_styles.css' %}"> <!-- 編集用のCSSファイルを読み込む -->
+</head>
+<body>
+    <h1>投稿編集</h1>
+
+    <form method="post" enctype="multipart/form-data" class="edit-post-form">
+            {% csrf_token %}
+            <div class="image-container">
+                {% comment %} <!-- 現在の画像を表示 -->
+                <img src="{{ post.image.url }}" alt="Current Image" class="current-image"> {% endcomment %}
+                
+                <!-- 新しい画像を選択 -->
+                <input type="file" id="new_image" name="new_image" accept="image/*">
+                <button type="button" id="add_image_button">新しい画像を追加</button>
+                
+                <!-- 画像を削除するためのチェックボックス -->
+                <label for="delete_image" class="delete-label">現在の画像を削除:
+                    <input type="checkbox" id="delete_image" name="delete_image" value="delete"> <!-- 削除を示す値を追加 -->
+                </label>
+
+                <!-- 新しい画像のプレビューを表示するためのエリア -->
+                <div id="new_image_preview" class="new-image-preview"></div>
+            </div>
+
+            {{ form.as_p }}
+
+        <button type="submit">更新</button>
+    </form>
+
+        <!-- JavaScriptファイルを読み込む -->
+        <script src="{% static 'js/post_edit.js' %}"></script>
+
+
+</body>
+</html>

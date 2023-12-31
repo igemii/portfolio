@@ -1,22 +1,22 @@
-
-/* ページ全体のスタイル */
+ページ全体のスタイル
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f5deb3; /* ベージュに近い背景色 */
+    color: #000; /* 文字色を黒に設定 */
 }
 
 /* ヘッダーのスタイル */
 header {
-    background-color: #333;
-    color: #fff;
+    background-color: #f5f5dc; /* アイボリー色の例 */
+    color: #000; /* 文字色を黒に設定 */
     padding: 20px;
     text-align: center;
 }
 
 header a {
-    color: #fff;
+    color: #000; /* リンクの文字色を黒に設定 */
     text-decoration: none;
     margin-right: 10px;
 }
@@ -37,7 +37,7 @@ main {
 }
 
 .post-item {
-    background-color: #fff;
+    background-color: #f5deb3; /* 白色の背景 */
     border: 1px solid #ddd;
     padding: 10px;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
@@ -51,6 +51,6 @@ main {
 
 /* フッターのスタイル */
 footer {
-    background-color: #333;
-    color: #fff;
+    background-color: #f5deb3; /* アイボリー色の例 */
+    color: #000; /* 文字色を黒に設定 */
 }

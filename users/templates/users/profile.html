@@ -6,9 +6,62 @@
     <meta charset="UTF-8">
     <title>User Profile</title>
     <link rel="stylesheet" href="{% static 'css/profile_styles.css' %}"> <!-- プロフィール用のCSSファイルを読み込む -->
+    <style>
+        /* ヘッダーの文字色を黒に設定 */
+        header {
+            color: #000;
+        }
+
+        /* アイコンを丸くして中央揃えにするスタイル */
+        .profile-info {
+            text-align: center;
+        }
+
+        .profile-info img {
+            border-radius: 50%; /* 丸い形状にする */
+            max-width: 100px; /* アイコンの最大幅を設定 */
+            height: auto;
+            display: block;
+            margin: 0 auto; /* 中央揃え */
+        }
+
+        /* 投稿一覧を中央揃えにするスタイル */
+        .post-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .post-item {
+            background-color: #fff; /* 白色の背景 */
+            border: 1px solid #ddd;
+            padding: 10px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            margin: 10px; /* 投稿アイテム間の余白 */
+            flex: 0 0 calc(33.333% - 20px); /* 3列にするための計算 */
+            max-width: calc(33.333% - 20px); /* 3列にするための計算 */
+        }
+
+        .post-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* フッター内の全てのリンク・ボタンを中央揃えにする */
+        footer {
+            text-align: center;
+        }
+
+        footer a,
+        footer button {
+            display: inline-block;
+            margin: 0 5px;
+        }
+    </style>
 </head>
 <body>
-    <header>
+    <header style="background-color: #f5f5dc;">
         <h1>User Profile</h1>
         <!-- ログアウトボタン -->
         <form action="{% url 'logout' %}" method="post">
@@ -28,50 +81,59 @@
                     <p>{{ profile.bio }}</p>
                     <!-- その他のプロフィール情報を表示 -->
                 </div>
+
+                <footer>
+                <a href="{% url 'edit_profile' %}">プロフィールの編集</a>
+                <a href="{% url 'post_create' %}">新規投稿</a>
+                <a href="{% url 'post_list' %}">トップページに戻る</a>
+                </footer>
+
+
             </section>
 
             <section class="user-posts-section">
-                <h2>User Posts</h2>
-                <ul class="user-posts-list">
+                <h2>投稿一覧</h2>
+                <div class="post-container">
                     {% for post in user_posts %}
-                        <li>
+                        <div class="post-item">
                             <a href="{% url 'post_detail' post.pk %}">
-                                <img src="{{ post.image.url }}" alt="{{ post.title }} Image">
+                                {% if post.images.all %}
+                                    <img src="{{ post.images.first.image.url }}" alt="{{ post.title }} Image">
+                                {% endif %}
                             </a>
-                        </li>
+                        </div>
                     {% empty %}
-                        <li>No posts found.</li>
+                        <p>No posts found.</p>
                     {% endfor %}
-                </ul>
+                </div>
             </section>
 
             <section class="favorite-posts-section">
                 <h2>お気に入り投稿</h2>
-                <ul class="favorite-posts-list">
+                <div class="post-container">
                     {% for favorite in profile.user.favorite_set.all %}
-                        <li>
+                        <div class="post-item">
                             <a href="{% url 'post_detail' favorite.post.pk %}">
-                                <img src="{{ favorite.post.image.url }}" alt="{{ favorite.post.title }} Image">
+                                {% if favorite.post.images.all %}
+                                  <img src="{{ favorite.post.images.first.image.url }}" alt="{{ favorite.post.title }} Image">
+                                {% endif %}
                             </a>
-                        </li>
+                        </div>
                     {% empty %}
-                        <li>No favorite posts found.</li>
+                        <p>No favorite posts found.</p>
                     {% endfor %}
-                </ul>
+                </div>
                 {% if profile.user.profile.favorite_posts.count > 5 %}
                     <a href="{% url 'favorite_list' %}">お気に入り一覧</a>
                 {% endif %}
             </section>
 
-            <footer>
-                <a href="{% url 'edit_profile' %}">Edit Profile</a>
-                <a href="{% url 'post_create' %}">New Post</a>
-                <a href="{% url 'post_list' %}">トップページに戻る</a>
-            </footer>
+
+        
         {% else %}
-            <p>No profile found.</p>
+            <p>No profile found. <a href="{% url 'edit_profile' %}">Create a profile</a></p>
         {% endif %}
     </main>
+    
 </body>
 </html>
-

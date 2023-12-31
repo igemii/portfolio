@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="{% static 'css/post_detail_styles.css' %}"> <!-- 投稿詳細用のCSSファイルを読み込む -->
 </head>
 <body>
-    <header>
+    <header style="background-color: #f5f5dc;">
         <h1>{{ post.title }}</h1>
-        <p>{{ post.description }}</p>
+       
         <!-- 他の投稿詳細情報を表示 -->
 
         <!-- 投稿者のユーザーページへのリンク -->
@@ -20,8 +20,27 @@
     </header>
 
     <main>
-        <img src="{{ post.image.url }}" alt="{{ post.title }} Image" width="500" height="300">
+        <!-- 複数の画像を表示 -->
+        <!-- 画像を中央揃えにして表示 -->
+        <div style="text-align: center;">
+            {% for image in post.images.all %}
+                <img src="{{ image.image.url }}" alt="{{ post.title }} Image" width="500" height="300">
+            {% endfor %}
+        </div>
+        <p>{{ post.description }}</p>
+
+        
         <!-- 他の詳細情報やいいねボタン、お気に入り登録ボタンなど -->
+
+        <!-- いいね！登録ボタン -->
+        {% if user.is_authenticated %}
+            <a href="{% url 'like_post' post.id %}">いいね！</a>
+        {% endif %}
+
+        <!-- お気に入り登録ボタン -->
+        {% if user.is_authenticated %}
+            <a href="{% url 'favorite_post' post.id %}">お気に入り登録</a>
+        {% endif %}
 
         <!-- コメントフォーム -->
         <form method="post" action="{% url 'add_comment_to_post' post.id %}">
@@ -29,7 +48,8 @@
             <button type="submit" class="comment-button">コメント</button>
         </form>
 
-            <!-- コメント表示ループ -->
+        <!-- コメント表示ループ -->
+        <ul class="comment-list">
             {% for comment in post.comments.all %}
                 <li class="comment-item">
                     <p>{{ comment.text }}</p>
@@ -49,10 +69,26 @@
         </ul>
     </main>
 
+    <!-- フッターに移動 -->
     <footer>
-        <!-- ページ遷移ボタン -->
-        <button onclick="history.back()">1つ前のページに戻る</button>
-        <a href="{% url 'post_list' %}">トップページに戻る</a>
+        <div class="button-group">
+            {% if user.is_authenticated and post.author == user %}
+                <form method="post" action="{% url 'delete_post' post.id %}">
+                    {% csrf_token %}
+                    <button type="submit">投稿を削除</button>
+                </form>
+            {% endif %}
+
+            {% if user.is_authenticated and post.author == user %}
+                <a href="{% url 'edit_post' post.id %}">投稿を編集</a>
+            {% endif %}
+        </div>
+
+        <div class="button-group">
+            <button onclick="history.back()">1つ前のページに戻る</button>
+            <a href="{% url 'post_list' %}">トップページに戻る</a>
+        </div>
     </footer>
+
 </body>
 </html>

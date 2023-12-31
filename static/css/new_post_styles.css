@@ -1,5 +1,3 @@
-
-
 /* フォームのスタイル */
 .new-post-form {
     max-width: 500px;
@@ -11,18 +9,25 @@
 }
 
 /* フォーム内の要素のスタイル */
-.new-post-form input[type="text"],
-.new-post-form textarea {
-    width: 100%;
+.new-post-form .input-field {
+    width: calc(100% - 16px); /* paddingを考慮して幅を調整 */
     padding: 8px;
     margin-bottom: 10px;
     border: 1px solid #ccc;
     border-radius: 3px;
     box-sizing: border-box;
+    color: #333; /* テキストの色を設定 */
 }
 
-.new-post-form input[type="file"] {
-    margin-bottom: 20px;
+.new-post-form textarea {
+    resize: vertical; /* 垂直方向のリサイズを有効にする */
+}
+
+/* プレースホルダーテキストのスタイル */
+.new-post-form input::placeholder,
+.new-post-form textarea::placeholder {
+    color: #999; /* プレースホルダーテキストの色を薄くする */
+    font-weight: normal; /* フォントのウェイトを調整 */
 }
 
 /* 送信ボタンのスタイル */

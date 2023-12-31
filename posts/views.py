@@ -1,23 +1,14 @@
-from django.shortcuts import render, get_object_or_404
-from django.shortcuts import redirect, get_object_or_404
-from django.shortcuts import get_object_or_404, redirect
-from django.shortcuts import render, redirect
-from .forms import PostForm, CommentForm
-from .models import Post
+import os
+from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.http import JsonResponse
-from .forms import PostForm  # PostForm を作成する必要があります
-from .models import Post, Comment
-from .forms import CommentForm
-from .models import Comment
-from .models import Favorite
 from django.db.models import Count
-from django.urls import reverse
+from django.http import JsonResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from .forms import PostForm, CommentForm
+from .models import Post, Comment, Favorite, PostImage
 
-
-
-"""投稿一覧のビュー"""
-
+# 投稿一覧のビュー
 def post_list(request):
     sort_option = request.GET.get('sort')
 
@@ -34,63 +25,60 @@ def post_list(request):
 
     return render(request, 'posts/post_list.html', {'posts': posts})
 
-
-
-
-"""投稿詳細のビュー"""
-
+# 投稿詳細のビュー
 def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)  # 投稿を取得するクエリ
+    post = get_object_or_404(Post, pk=pk)
     return render(request, 'posts/post_detail.html', {'post': post})
 
-
-
-"""新規投稿のビュー"""
-
+# 新規投稿のビュー
 def post_create(request):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
-            # フォームが有効な場合、commit=False でフォームの内容を保存してから
-            # author フィールドを現在のログインユーザーに設定し、保存する
             post = form.save(commit=False)
-            post.author = request.user  # 現在のログインユーザーを author として設定
+            post.author = request.user
             post.save()
-            return redirect('post_detail', pk=post.pk)  # 投稿作成後に post_detail ページにリダイレクト
+
+            images = request.FILES.getlist('images')
+            for image in images:
+                post_image = PostImage.objects.create(image=image)
+                post.images.add(post_image)
+            
+            return redirect('post_detail', pk=post.pk)
     else:
         form = PostForm()
     return render(request, 'posts/post_create.html', {'form': form})
 
+# 投稿編集のビュー
+def edit_post(request, post_id):
+    post = get_object_or_404(Post, pk=post_id)
 
+    if request.method == 'POST' and request.user == post.author:
+        form = PostForm(request.POST, request.FILES, instance=post)
+        if form.is_valid():
+            delete_image = request.POST.get('delete_image')
+            if delete_image == 'delete':
+                if post.image:
+                    os.remove(os.path.join(settings.MEDIA_ROOT, str(post.image)))
+                    post.image = None
+            form.save()
+            return redirect('post_detail', pk=post_id)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'posts/post_edit.html', {'form': form, 'post': post})
 
-"""投稿削除のビュー"""
-
+# 投稿削除のビュー
 def delete_post(request, post_id):
-    # POST メソッドの場合のみ削除を処理する
-    if request.method == 'POST':
-        # 削除対象の投稿を取得
-        post = get_object_or_404(Post, pk=post_id)
-        
-        # 投稿を削除するための権限チェック
-        if request.user == post.author:  # ログインユーザーが投稿者かどうかチェック
-            post.delete()
-            # 削除が完了したらリダイレクトする（適切なURLに置き換える）
-            return redirect('post_list')
-        else:
-            # 投稿者でない場合は何らかのエラーを返すか、リダイレクトする
-            # 例： return redirect('post_detail', post_id=post_id)
-            pass
+    post = get_object_or_404(Post, pk=post_id)
+    if request.method == 'POST' and request.user == post.author:
+        post.delete()
+        messages.success(request, '投稿が削除されました')
+        return redirect('post_list')
+    else:
+        messages.error(request, '投稿を削除できませんでした')
+        return redirect('post_detail', pk=post_id)
 
-    # POST メソッドでない場合や、削除権限がない場合の処理
-    # 例えば詳細ページにリダイレクトするなど
-    return redirect('post_detail', post_id=post_id)
-
-
-
-
-
-"""コメント追加のビュー"""
-
+# コメント追加のビュー
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == 'POST':
@@ -98,65 +86,40 @@ def add_comment_to_post(request, pk):
         if form.is_valid():
             comment = form.save(commit=False)
             comment.post = post
-            comment.author = request.user  # コメントの作者をログインユーザーに設定
+            comment.author = request.user
             comment.save()
-            return redirect('post_detail', pk=post.pk)  # 投稿詳細ページにリダイレクト
+            return redirect('post_detail', pk=post.pk)
     else:
         form = CommentForm()
     return render(request, 'posts/add_comment_to_post.html', {'form': form})
 
-
-
-
-"""コメント削除のビュー"""
-
+# コメント削除のビュー
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, pk=comment_id)
-    post_pk = comment.post.pk  # コメントが属する投稿の pk を取得
+    post_pk = comment.post.pk
     if request.user == comment.author:
         comment.delete()
     return redirect('post_detail', pk=post_pk)
 
-
-
-"""いいね！登録のビュー"""
-
+# いいね！登録のビュー
 def like_post(request, post_id):
-    # ここにいいねのロジックを追加する
-    # ...
-    return redirect('post_detail', pk=post_id)  # リダイレクト先である投稿詳細ページに post_id を渡してリダイレクトする
+    return redirect('post_detail', pk=post_id)
 
-
-
-
-
-"""お気に入り登録のビュー"""
+# お気に入り登録のビュー
 def favorite_post(request, post_id):
     post = get_object_or_404(Post, pk=post_id)
-
-    # お気に入り登録がすでにされているか確認
-    if Favorite.objects.filter(user=request.user, post=post).exists():
-        # お気に入り登録がすでにされている場合の処理
-        pass
-    else:
-        # お気に入り登録を行う場合の処理
+    if not Favorite.objects.filter(user=request.user, post=post).exists():
         favorite = Favorite(user=request.user, post=post)
         favorite.save()
 
-    # お気に入り登録後、リダイレクト先などの処理を行う
-    return redirect('post_detail', pk=post_id)  # pk=post_id として修正
+    return redirect('post_detail', pk=post_id)
 
-
-
-"""検索ビュー"""
-
+# 検索ビュー
 def search_posts(request):
     query = request.GET.get('q')
     if query:
-        # タイトルまたは説明に検索クエリが部分一致する投稿をフィルタリング
         posts = Post.objects.filter(title__icontains=query) | Post.objects.filter(description__icontains=query)
     else:
-        # クエリが提供されていない場合は全ての投稿を表示
         posts = Post.objects.all()
     
     return render(request, 'posts/post_list.html', {'posts': posts})

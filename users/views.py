@@ -1,15 +1,9 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import login
-from django.shortcuts import redirect
-from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-from .models import Profile
-from .forms import ProfileForm
-from django.shortcuts import get_object_or_404
-from .models import Post
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth import login, logout
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Profile, Post
+from .forms import ProfileForm
 from django.contrib.auth.models import User
 
 """新規登録（signup）のビュー"""
@@ -60,17 +54,12 @@ def profile(request, username=None):
     else:  # もしusernameが指定されていなければ、ログインユーザーのプロフィールを表示
         user_profile = Profile.objects.filter(user=request.user).first()
         user_posts = request.user.posts.all()
+        
+    if not user_profile:  # プロフィールが存在しない場合は作成ページにリダイレクト
+        return redirect('edit_profile')    
 
     return render(request, 'users/profile.html', {'profile': user_profile, 'user_posts': user_posts})
-# def profile(request):
-#     try:
-#         profile = Profile.objects.get(user=request.user)
-#         user_posts = Post.objects.filter(author=request.user)
-#     except Profile.DoesNotExist:
-#         profile = None
-#         user_posts = None
-    
-#     return render(request, 'users/profile.html', {'profile': profile, 'user_posts': user_posts})
+
 
 def user_posts(request, user_id):
     # ユーザーのプロフィールを取得

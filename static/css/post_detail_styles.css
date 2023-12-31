@@ -1,43 +1,26 @@
-
-
 /* ページ全体のスタイル */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #f5deb3;
+    color: #000; /* ページ全体のテキストを黒色に設定 */
 }
 
 header {
-    background-color: #333;
-    color: #fff;
+    background-color: #f5deb3;
+    color: #000;
     padding: 20px;
     text-align: center;
 }
 
-main {
-    padding: 20px;
-}
-
-footer {
-    background-color: #333;
-    color: #fff;
-    padding: 10px 20px;
-    text-align: center;
-}
-
-/* 画像のスタイル */
-img {
-    display: block;
-    margin: 20px auto;
-}
-
-
+/* 他のスタイルは省略 */
 
 /* コメント表示リストのスタイル */
 .comment-list {
     list-style: none;
     padding: 0;
+    color: #000; /* コメントのテキストを黒色に設定 */
 }
 
 .comment-item {
@@ -51,6 +34,10 @@ img {
 }
 
 /* ページ遷移ボタンのスタイル */
+footer {
+    text-align: center;
+}
+
 footer button,
 footer a {
     margin-right: 10px;
@@ -60,9 +47,13 @@ footer a {
     color: #fff;
     text-decoration: none;
     cursor: pointer;
+    font-size: 14px; /* ボタンの文字サイズ */
+    display: inline-block; /* インライン要素として中央揃えにするため */
+    margin-top: 10px; /* ボタン間の上マージンを追加 */
 }
 
-footer button:hover,
-footer a:hover {
-    background-color: #777;
+/* 追加 */
+footer button:first-child,
+footer a:first-child {
+    margin-right: 0; /* 最初のボタンの右マージンを削除 */
 }
