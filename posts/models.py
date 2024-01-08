@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 # from .models import Post
 
 
@@ -10,7 +11,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     images = models.ManyToManyField('PostImage', blank=True)  # PostImageモデルとの多対多のリレーションを定義
-    created_at = models.DateTimeField(auto_now_add=True)  # 新たに追加
+    created_at = models.DateTimeField(default=timezone.now)  # 新たに追加
 
     def __str__(self):
         return self.title

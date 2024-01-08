@@ -25,6 +25,7 @@ def post_list(request):
 
     return render(request, 'posts/post_list.html', {'posts': posts})
 
+
 # 投稿詳細のビュー
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
